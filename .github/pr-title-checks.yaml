@@ -1,0 +1,30 @@
+name: "pr-title-checks"
+
+on:
+  # NOTE:
+  # - Using `pull_request_target` means that a pull request will use the workflow config that's on
+  #   the main branch, regardless of whether the pull request modifies this workflow.
+  # - If we use `pull_request` instead of `pull_request_target`, the workflow will fail to run on
+  #   pull requests from external users since their workflow runs don't have access to the
+  #   `GITHUB_TOKEN` secret.
+  pull_request_target:
+    branches: ["main"]
+    types: ["edited", "opened", "reopened"]
+
+permissions:
+  # For amannn/action-semantic-pull-request@v5 to be able to read the PR title.
+  pull-requests: "read"
+
+concurrency:
+  group: "${{github.workflow}}-${{github.ref}}"
+
+  # Cancel in-progress jobs for efficiency
+  cancel-in-progress: true
+
+jobs:
+  conventional-commits:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "amannn/action-semantic-pull-request@v5"
+        env:
+          GITHUB_TOKEN: "${{secrets.GITHUB_TOKEN}}"
