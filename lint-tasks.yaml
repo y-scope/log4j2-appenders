@@ -7,11 +7,37 @@ vars:
 tasks:
   check:
     cmds:
+      - task: "java-check"
       - task: "yml-check"
 
   fix:
     cmds:
+      - task: "java-fix"
       - task: "yml-fix"
+
+  java-check:
+    cmds:
+      - task: "java-format-check"
+      - task: "java-static-check"
+
+  java-fix:
+    cmds:
+      - task: "java-format-fix"
+      - task: "java-static-fix"
+
+  java-format-check:
+    deps: ["venv"]
+    cmd: "mvn spotless:check"
+
+  java-format-fix:
+    deps: ["venv"]
+    cmd: "mvn spotless:apply"
+
+  java-static-check:
+    # Alias task to `java-static-fix` since we don't currently support automatic fixes.
+    aliases: ["java-static-fix"]
+    deps: ["venv"]
+    cmd: "mvn spotbugs:check"
 
   yml:
     aliases:
