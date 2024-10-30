@@ -167,6 +167,10 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <effort>Max</effort>
+          <includeTests>true</includeTests>
+        </configuration>
       </plugin>
 
       <plugin>

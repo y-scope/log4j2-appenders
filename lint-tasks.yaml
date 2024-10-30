@@ -37,7 +37,7 @@ tasks:
     # Alias task to `java-static-fix` since we don't currently support automatic fixes.
     aliases: ["java-static-fix"]
     deps: ["venv"]
-    cmd: "mvn spotbugs:check"
+    cmd: "mvn compile spotbugs:check"
 
   yml:
     aliases:
