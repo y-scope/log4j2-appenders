@@ -1,7 +1,7 @@
 # log4j2-appenders
 This is a repository for a set of useful [Log4j 2][log4j2] appenders.
 
-## Contributing
+# Contributing
 Follow the steps below to develop and contribute to the project.
 
 ## Set up
