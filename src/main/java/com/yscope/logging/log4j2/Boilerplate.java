@@ -7,7 +7,5 @@ public class Boilerplate {
     /**
      * @return A boilerplate greeting.
      */
-    public static String getGreeting() {
-        return "Hello, world!";
-    }
+    public static String getGreeting() { return "Hello, world!"; }
 }

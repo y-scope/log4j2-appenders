@@ -56,5 +56,21 @@ To run all linting checks AND automatically fix any fixable issues:
 task lint:fix
 ```
 
+### Running specific linters
+The commands above run all linting checks, but for performance you may want to run a subset (e.g.,
+if you only changed Java files, you don't need to run the YAML linting checks) using one of the
+tasks in the table below.
+
+| Task                     | Description                                               |
+|--------------------------|-----------------------------------------------------------|
+| `lint:java-check`        | Runs the Java linters (formatters and static analyzers).  |
+| `lint:java-fix`          | Runs the Java linters and fixes some violations.          |
+| `lint:java-format-check` | Runs the Java formatters.                                 |
+| `lint:java-format-fix`   | Runs the Java formatters and fixes some violations.       |
+| `lint:java-static-check` | Runs the Java static analyzers.                           |
+| `lint:java-static-fix`   | Runs the Java static analyzers and fixes some violations. |
+| `lint:yml-check`         | Runs the YAML linters.                                    |
+| `lint:yml-fix`           | Runs the YAML linters and fixes some violations.          |
+
 [log4j2]: https://logging.apache.org/log4j/2.x/index.html
 [Task]: https://taskfile.dev
