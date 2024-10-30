@@ -10,6 +10,27 @@ Initialize and update the submodules:
 git submodule update --init --recursive
 ```
 
+## Requirements
+
+* Java 11
+* Maven 3.8 or newer
+
+## Building
+Build and test:
+```shell
+mvn package
+```
+
+Build without testing:
+```shell
+mvn package -DskipTests
+```
+
+## Testing
+```shell
+mvn test
+```
+
 ## Linting
 Before submitting a pull request, ensure you’ve run the linting [commands](#running-the-linters)
 below and either fixed any violations or suppressed the warnings.
