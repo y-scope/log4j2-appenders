@@ -12,7 +12,7 @@ git submodule update --init --recursive
 
 ## Requirements
 
-* Java 11
+* JDK 11
 * Maven 3.8 or newer
 
 ## Building

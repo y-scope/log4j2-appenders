@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoilerplateTests {
     @Test
-    void testGreeting() {
-        assertEquals(Boilerplate.getGreeting(), "Hello, world!");
+    public void testGreeting() {
+        assertEquals("Hello, world!", Boilerplate.getGreeting());
     }
 }

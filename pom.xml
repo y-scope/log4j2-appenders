@@ -38,14 +38,28 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <org.apache.logging.log4j.version>2.24.1</org.apache.logging.log4j.version>
+    <org.junit.jupiter.version>5.11.3</org.junit.jupiter.version>
   </properties>
 
   <dependencies>
+    <!-- Provided dependencies -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${org.apache.logging.log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${org.apache.logging.log4j.version}</version>
+    </dependency>
+
     <!-- Dependencies for testing -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.11.3</version>
+      <version>${org.junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -100,7 +114,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M16</version>
+          <version>3.21.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>

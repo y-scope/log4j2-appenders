@@ -1,3 +1,6 @@
 # Build-related directories and files
 .task/
 target/
+
+# IDE-related directories and files
+.idea/
