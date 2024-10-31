@@ -40,19 +40,38 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.apache.logging.log4j.version>2.24.1</org.apache.logging.log4j.version>
     <org.junit.jupiter.version>5.11.3</org.junit.jupiter.version>
+    <com.github.luben.zstd-jni.version>1.5.2-2</com.github.luben.zstd-jni.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.yscope.clp</groupId>
+      <artifactId>clp-ffi</artifactId>
+      <version>0.4.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+    </dependency>
     <!-- Provided dependencies -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>${org.apache.logging.log4j.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>${org.apache.logging.log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>${com.github.luben.zstd-jni.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Dependencies for testing -->
