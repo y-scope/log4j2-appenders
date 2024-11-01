@@ -145,6 +145,9 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
     protected void activateOptionsHook(long currentTimestamp) throws IOException {
         String fileName = computeLogFileName(getBaseName(), currentTimestamp);
         String filePath = computeLogFilePath(fileName);
+        if (!(getLayout() instanceof PatternLayout)) {
+            throw new RuntimeException("log4j2-appender currently only supports Pattern layout");
+        }
         clpIrFileAppender = new ClpIrFileAppender(
                 filePath,
                 getName(),

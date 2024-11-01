@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -110,7 +111,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     private final Thread shutdownHookThread = new Thread(new ShutdownHookRunnable());
     private volatile boolean closeWithDelayedShutdown = false;
 
-    private volatile long numEventsLogged = 0L;
+    private final AtomicLong numEventsLogged = new AtomicLong(0L);
 
     private boolean activated = false;
 
@@ -198,6 +199,12 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
                             Level.toLevel(kv[0]),
                             Long.parseLong(kv[1]) * 60 * 1000
                     );
+                } catch (NumberFormatException ex) {
+                    error(
+                            "Invalid number format for hard flush timeout value " + "for the "
+                                    + kv[0] + " verbosity level: " + kv[1],
+                            ex
+                    );
                 } catch (UnsupportedOperationException ex) {
                     error(
                             "Failed to set hard flush timeout value " + "for the " + kv[0]
@@ -232,15 +239,16 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
                             Level.toLevel(kv[0]),
                             Long.parseLong(kv[1]) * 1000
                     );
+                } catch (NumberFormatException ex) {
+                    error(
+                            "Invalid number format for soft flush timeout value " + "for the "
+                                    + kv[0] + " verbosity level: " + kv[1],
+                            ex
+                    );
                 } catch (UnsupportedOperationException ex) {
                     error(
                             "Failed to set soft flush timeout value " + "for the " + kv[0]
                                     + " verbosity level: " + kv[1]
-                    );
-                } catch (Exception ex) {
-                    error(
-                            "Failed to set hard flush timeout value " + "for the " + kv[0]
-                                    + " verbosity level: " + kv[1] + ex
                     );
                 }
             } else {
@@ -277,7 +285,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
 
     public String getBaseName() { return baseName; }
 
-    public long getNumEventsLogged() { return numEventsLogged; }
+    public long getNumEventsLogged() { return numEventsLogged.get(); }
 
     /**
      * This method is primarily used for testing
@@ -295,7 +303,9 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
      * for testing.
      */
     public void simulateShutdownHook() {
-        shutdownHookThread.start();
+        if (!shutdownHookThread.isAlive()) {
+            shutdownHookThread.start();
+        }
     }
 
     /**
@@ -434,7 +444,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
 
         try {
             appendHook(loggingEvent);
-            ++numEventsLogged;
+            numEventsLogged.incrementAndGet();
 
             if (!rolloverRequired()) {
                 updateFreshnessTimeouts(loggingEvent);
@@ -448,7 +458,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
                 resetFreshnessTimeouts();
                 lastRolloverTimestamp = loggingEvent.getTimeMillis();
                 startNewLogFile(lastRolloverTimestamp);
-                numEventsLogged = 0L;
+                numEventsLogged.set(0L);
             }
         } catch (Exception ex) {
             getHandler().error("Failed to write log event.", ex);
@@ -614,8 +624,8 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
                     if (delayedShutdownRequested) {
                         // Update soft timeout if another event occurred
                         long currentTimestamp = timeSource.getCurrentTimeInMilliseconds();
-                        if (numEventsLogged != lastNumEventsLogged) {
-                            lastNumEventsLogged = numEventsLogged;
+                        if (numEventsLogged.get() != lastNumEventsLogged) {
+                            lastNumEventsLogged = numEventsLogged.get();
                             shutdownSoftTimeoutTimestamp = currentTimestamp + shutdownSoftTimeout;
                         }
 
@@ -643,7 +653,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
                     long currentTimestamp = timeSource.getCurrentTimeInMilliseconds();
                     shutdownSoftTimeoutTimestamp = currentTimestamp + shutdownSoftTimeout;
                     shutdownHardTimeoutTimestamp = currentTimestamp + shutdownHardTimeout;
-                    lastNumEventsLogged = numEventsLogged;
+                    lastNumEventsLogged = numEventsLogged.get();
 
                     // Lower the timeout check period so we react faster when flushing or
                     // shutting down is necessary
@@ -749,6 +759,9 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
         }
     }
 
+    @Override
+    public abstract void flush() throws IOException;
+
     /**
      * Thread to handle shutting down the appender when the JVM is shutting down. When {@code
      * closeOnShutdown} is false, this thread enables a delayed close procedure so that logs that
@@ -782,7 +795,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
         private long shutdownSoftTimeout = 5000;
 
         @PluginBuilderAttribute("ShutdownHardTimeoutInSeconds")
-        private long shutdownHardTimeout = 30000;
+        private long shutdownHardTimeout = 30;
 
         @PluginBuilderAttribute("TimeoutCheckPeriod")
         private int timeoutCheckPeriod = 1000;
@@ -848,7 +861,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
 
         /** @param shutdownHardTimeoutInSeconds The hard shutdown timeout in seconds */
         public B setShutdownHardTimeoutInSeconds(long shutdownHardTimeoutInSeconds) {
-            this.shutdownHardTimeout = shutdownHardTimeoutInSeconds * 1000;
+            this.shutdownHardTimeout = shutdownHardTimeoutInSeconds;
             return asBuilder();
         }
 

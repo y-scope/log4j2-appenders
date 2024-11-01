@@ -60,7 +60,8 @@ public class CompressionPatternLayoutContainer {
         Matcher matcher = pattern.matcher(patternLayout.getConversionPattern());
         if (!matcher.find()) {
             throw new UnsupportedOperationException(
-                    "Pattern layout must contain timestamp converter"
+                    "Pattern layout must contain timestamp converter. Provided pattern: "
+                            + patternLayout.getConversionPattern()
             );
         }
         String compressionPatternLayoutStr = matcher.group("suffix");
