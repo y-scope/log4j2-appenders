@@ -308,6 +308,15 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
                 return false;
             }
 
+            if (rolloverCompressedSizeThreshold <= 0) {
+                LOGGER.error("Compressed size threshold must be positive");
+                return false;
+            }
+            if (rolloverUncompressedSizeThreshold <= 0) {
+                LOGGER.error("Uncompressed size threshold must be positive");
+                return false;
+            }
+
             return true;
         }
     }
