@@ -303,6 +303,11 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
                 return false;
             }
 
+            if (outputDir == null || outputDir.isEmpty()) {
+                LOGGER.error("The output directory 'outputDir' must not be null or empty");
+                return false;
+            }
+
             return true;
         }
     }
