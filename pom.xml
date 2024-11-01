@@ -189,6 +189,7 @@
         <configuration>
           <effort>Max</effort>
           <includeTests>true</includeTests>
+          <excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
 
