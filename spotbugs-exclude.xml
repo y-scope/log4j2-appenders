@@ -2,48 +2,48 @@
   <Match>
     <Bug category="BAD_PRACTICE" code="CT" value="CT_CONSTRUCTOR_THROW" />
     <Class name="com.yscope.logging.log4j2.AbstractBufferedRollingFileAppender" />
-    <Justification>Log4j2 should throw immediately if configurations are wrong</Justification>
+    <Justification>Log4j2 should throw immediately if configurations are wrong.</Justification>
   </Match>
 
   <Match>
     <Bug category="BAD_PRACTICE" code="CT" value="CT_CONSTRUCTOR_THROW" />
     <Class name="com.yscope.logging.log4j2.ClpIrFileAppender" />
-    <Justification>Log4j2 should throw immediately if configurations are wrong</Justification>
+    <Justification>Log4j2 should throw immediately if configurations are wrong.</Justification>
   </Match>
 
   <Match>
     <Bug category="BAD_PRACTICE" code="CT" value="CT_CONSTRUCTOR_THROW" />
     <Class name="com.yscope.logging.log4j2.CompressionPatternLayoutContainer" />
-    <Justification>Log4j2 should throw immediately if configurations are wrong</Justification>
+    <Justification>Log4j2 should throw immediately if configurations are wrong.</Justification>
   </Match>
 
   <Match>
     <Bug category="MALICIOUS_CODE" code="EI" value="EI_EXPOSE_REP" />
     <Class name="com.yscope.logging.log4j2.PatternLayoutBufferDestination" />
-    <Justification>Simply returning the buffer. No security check required. False positive</Justification>
+    <Justification>False positive: Simply returning the buffer. No security check required.</Justification>
   </Match>
 
   <Match>
     <Bug category="PERFORMANCE" code="UrF" value="URF_UNREAD_FIELD" />
     <Class name="com.yscope.logging.log4j2.AbstractBufferedRollingFileAppender$Builder" />
-    <Justification>Log4j2 plugin attributes. False positive</Justification>
+    <Justification>False positive: Log4j2 plugin attributes.</Justification>
   </Match>
 
   <Match>
     <Bug category="PERFORMANCE" code="UrF" value="URF_UNREAD_FIELD" />
     <Class name="com.yscope.logging.log4j2.AbstractClpIrBufferedRollingFileAppender$Builder" />
-    <Justification>Log4j2 plugin attributes. False positive</Justification>
+    <Justification>False positive: Log4j2 plugin attributes.</Justification>
   </Match>
 
   <Match>
     <Bug category="PERFORMANCE" code="UrF" value="URF_UNREAD_FIELD" />
     <Class name="com.yscope.logging.log4j2.ClpIrFileAppender$Builder" />
-    <Justification>Log4j2 plugin attributes. False positive</Justification>
+    <Justification>False positive: Log4j2 plugin attributes.</Justification>
   </Match>
 
   <Match>
     <Bug category="MT_CORRECTNESS" code="IS" value="IS2_INCONSISTENT_SYNC" />
     <Class name="com.yscope.logging.log4j2.AbstractBufferedRollingFileAppender" />
-    <Justification>Custom synchronization is for shutdown after all user threads</Justification>
+    <Justification>Custom synchronization is for shutdown after all user threads.</Justification>
   </Match>
 </FindBugsFilter>
