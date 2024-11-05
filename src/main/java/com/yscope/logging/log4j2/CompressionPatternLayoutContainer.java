@@ -48,7 +48,9 @@ public class CompressionPatternLayoutContainer {
     private final PatternLayoutBufferDestination logMsgByteBufferDestination;
 
     public CompressionPatternLayoutContainer(final PatternLayout patternLayout) {
-        Objects.requireNonNull(patternLayout);
+        if (patternLayout == null) {
+            throw new IllegalArgumentException("layout is required for appender");
+        }
 
         // Parse the timestamp out into 2 parts
         // - tsPattern,

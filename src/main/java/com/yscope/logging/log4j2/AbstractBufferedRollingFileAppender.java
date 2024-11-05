@@ -116,6 +116,50 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     private final AtomicBoolean closeStarted = new AtomicBoolean(false);
     private volatile boolean closedForAppends = false;
 
+    /**
+     * Default constructor
+     */
+    public AbstractBufferedRollingFileAppender (
+        final String name,
+        final Filter filter,
+        final Layout<? extends Serializable> layout,
+        final boolean ignoreExceptions,
+        final Property[] properties) {
+        this(name, filter, layout, ignoreExceptions, properties, new SystemTimeSource());
+    }
+
+    /**
+     * Constructor to enable the ability to specify a TimeSource, such as those
+     * that can be controlled manually to facilitate unit testing
+     * @param timeSource The time source that the appender should use
+     */
+    public AbstractBufferedRollingFileAppender (
+        final String name,
+        final Filter filter,
+        final Layout<? extends Serializable> layout,
+        final boolean ignoreExceptions,
+        final Property[] properties,
+        TimeSource timeSource) {
+        super(name, filter, layout, ignoreExceptions, properties);
+        this.timeSource = timeSource;
+
+        // The default flush timeout values below are optimized for high latency
+        // remote persistent storage such as object stores or HDFS
+        flushHardTimeoutPerLevel.put(Level.FATAL, 5L * 60 * 1000 /* 5 min */);
+        flushHardTimeoutPerLevel.put(Level.ERROR, 5L * 60 * 1000 /* 5 min */);
+        flushHardTimeoutPerLevel.put(Level.WARN, 10L * 60 * 1000 /* 10 min */);
+        flushHardTimeoutPerLevel.put(Level.INFO, 30L * 60 * 1000 /* 30 min */);
+        flushHardTimeoutPerLevel.put(Level.DEBUG, 30L * 60 * 1000 /* 30 min */);
+        flushHardTimeoutPerLevel.put(Level.TRACE, 30L * 60 * 1000 /* 30 min */);
+
+        flushSoftTimeoutPerLevel.put(Level.FATAL, 5L * 1000 /* 5 sec */);
+        flushSoftTimeoutPerLevel.put(Level.ERROR, 10L * 1000 /* 10 sec */);
+        flushSoftTimeoutPerLevel.put(Level.WARN, 15L * 1000 /* 15 sec */);
+        flushSoftTimeoutPerLevel.put(Level.INFO, 3L * 60 * 1000 /* 3 min */);
+        flushSoftTimeoutPerLevel.put(Level.DEBUG, 3L * 60 * 1000 /* 3 min */);
+        flushSoftTimeoutPerLevel.put(Level.TRACE, 3L * 60 * 1000 /* 3 min */);
+    }
+
     public AbstractBufferedRollingFileAppender(
             final String name,
             boolean ignoreExceptions,
@@ -171,7 +215,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
      *
      * @param closeOnShutdown Whether to close the log file on shutdown
      */
-    private void _setCloseOnShutdown(boolean closeOnShutdown) {
+    protected void _setCloseOnShutdown(boolean closeOnShutdown) {
         this.closeOnShutdown = closeOnShutdown;
     }
 
@@ -184,7 +228,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
      * @param csvTimeouts A CSV string of kv-pairs. The key being the log-level in all caps and the
      * value being the hard timeout for flushing in minutes. E.g. "INFO=30,WARN=10,ERROR=5"
      */
-    private void _setFlushHardTimeoutsInMinutes(String csvTimeouts) {
+    protected void _setFlushHardTimeoutsInMinutes(String csvTimeouts) {
         if (csvTimeouts == null) { return; }
         for (String token : csvTimeouts.split(",")) {
             String[] kv = token.split("=");
@@ -224,7 +268,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
      * @param csvTimeouts A CSV string of kv-pairs. The key being the log-level in all caps and the
      * value being the soft timeout for flushing in seconds. E.g. "INFO=180,WARN=15,ERROR=10"
      */
-    private void _setFlushSoftTimeoutsInSeconds(String csvTimeouts) {
+    protected void _setFlushSoftTimeoutsInSeconds(String csvTimeouts) {
         if (csvTimeouts == null) { return; }
         for (String token : csvTimeouts.split(",")) {
             String[] kv = token.split("=");
@@ -256,12 +300,12 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     }
 
     /** @param milliseconds The soft shutdown timeout in milliseconds */
-    private void _setShutdownSoftTimeout(long milliseconds) {
+    protected void _setShutdownSoftTimeout(long milliseconds) {
         shutdownSoftTimeout = milliseconds;
     }
 
     /** @param seconds The hard shutdown timeout in seconds */
-    private void _setShutdownHardTimeout(long seconds) {
+    protected void _setShutdownHardTimeout(long seconds) {
         shutdownHardTimeout = seconds * 1000;
     }
 
@@ -273,7 +317,7 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
      *
      * @param milliseconds The period in milliseconds
      */
-    private void _setTimeoutCheckPeriod(int milliseconds) {
+    protected void _setTimeoutCheckPeriod(int milliseconds) {
         timeoutCheckPeriod = milliseconds;
     }
 
@@ -425,8 +469,12 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     @Override
     public final synchronized void append(LogEvent loggingEvent) {
         if (false == isStarted()) {
-            LOGGER.warn("Appender is not started.");
-            return;
+            if (isStarting() || isInitialized()) {
+                start();
+            } else {
+                LOGGER.warn("Appender is not started.");
+                return;
+            }
         }
         if (closedForAppends) {
             LOGGER.warn("Appender closed for appends.");
