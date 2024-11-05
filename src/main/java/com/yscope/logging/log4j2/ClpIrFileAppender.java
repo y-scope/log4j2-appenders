@@ -54,7 +54,9 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  */
 public class ClpIrFileAppender extends AbstractAppender implements Flushable {
     public static final String PLUGIN_NAME = "ClpIrFileAppender";
-    private static final int estimatedFormattedTimestampLength = 25;    // e.g., "2024-11-05T14:04:24+05:30"
+
+    // Example format: "2024-11-05T14:04:24+05:30"
+    private static final int estimatedFormattedTimestampLength = 25;
     private long uncompressedSizeInBytes = 0;
 
     private AbstractClpIrOutputStream clpIrOutputStream;
