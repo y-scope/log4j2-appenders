@@ -38,21 +38,45 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Dependency versions -->
+    <com.github.luben.zstd-jni.version>1.5.6-7</com.github.luben.zstd-jni.version>
+    <com.yscope.clp.clp-ffi.version>0.4.7</com.yscope.clp.clp-ffi.version>
+    <commons-io.commons-io.version>2.17.0</commons-io.commons-io.version>
     <org.apache.logging.log4j.version>2.24.1</org.apache.logging.log4j.version>
     <org.junit.jupiter.version>5.11.3</org.junit.jupiter.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.yscope.clp</groupId>
+      <artifactId>clp-ffi</artifactId>
+      <version>${com.yscope.clp.clp-ffi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.commons-io.version}</version>
+    </dependency>
+
     <!-- Provided dependencies -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>${org.apache.logging.log4j.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>${org.apache.logging.log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>${com.github.luben.zstd-jni.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Dependencies for testing -->
@@ -170,6 +194,7 @@
         <configuration>
           <effort>Max</effort>
           <includeTests>true</includeTests>
+          <excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
 

@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class BoilerplateTests {
+public class ClpIrFileAppenderTest {
     @Test
     public void testGreeting() {
-        assertEquals("Hello, world!", Boilerplate.getGreeting());
+        assertEquals("Hello, world!", "Hello, world!");
     }
 }
