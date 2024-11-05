@@ -65,10 +65,8 @@ public class PatternLayoutBufferDestination implements ByteBufferDestination {
      * Retrieves and manages the buffer from the current PatternLayoutBufferDestination for encoding
      * log message. If the buffer (srcBuf) is full, Log4j2 triggers a drain operation. To ensure the
      * entire log message is buffered, the buffer's size is increased by
-     * {@code BUF_ALLOCATION_UNIT}.
-     * This expansion allows Log4j2 to continue encoding and appending any additional log message
-     * data
-     * into the buffer.
+     * {@code BUF_ALLOCATION_UNIT}. This expansion allows Log4j2 to continue encoding and appending
+     * any additional log message data into the buffer.
      *
      * @param srcBuf The ByteBuffer, filled with a character-encoded log message.
      * @return The adjusted ByteBuffer, now capable of holding more data.

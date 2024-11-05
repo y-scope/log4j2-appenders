@@ -32,6 +32,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
     // Appender settings, some of which may be set by Log4j through reflection.
     // For descriptions of the properties, see their setters below.
     private String outputDir;
+
     // CLP streaming compression parameters
     private int compressionLevel;
     private boolean useFourByteEncoding;
@@ -145,7 +146,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
     protected void activateOptionsHook(long currentTimestamp) throws IOException {
         String fileName = computeLogFileName(getBaseName(), currentTimestamp);
         String filePath = computeLogFilePath(fileName);
-        if (!(getLayout() instanceof PatternLayout)) {
+        if (false == (getLayout() instanceof PatternLayout)) {
             throw new RuntimeException("log4j2-appender currently only supports Pattern layout");
         }
         clpIrFileAppender = new ClpIrFileAppender(
@@ -298,7 +299,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
                 return false;
             }
 
-            if (!(getLayout() instanceof PatternLayout)) {
+            if (false == (getLayout() instanceof PatternLayout)) {
                 LOGGER.error(PLUGIN_NAME + " only supports PatternLayout");
                 return false;
             }

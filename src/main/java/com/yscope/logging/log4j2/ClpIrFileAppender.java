@@ -45,14 +45,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
- * A Log4j appender that writes log events into a Zstandard-compressed CLP IR
- * stream file.
+ * A Log4j appender that writes log events into a Zstandard-compressed CLP IR stream file.
  * <p>
- * Since this appender buffers data in the process of compressing the output,
- * derived appenders should ensure the appender is closed even when the program
- * exits uncleanly. Otherwise, the compressed output may be truncated. When the
- * appender is used directly from Log4j, we install a shutdown hook for this
- * purpose.
+ * Since this appender buffers data in the process of compressing the output, derived appenders
+ * should ensure the appender is closed even when the program exits uncleanly. Otherwise, the
+ * compressed output may be truncated. When the * appender is used directly from Log4j, we install a
+ * shutdown hook for this purpose.
  */
 public class ClpIrFileAppender extends AbstractAppender implements Flushable {
     public static final String PLUGIN_NAME = "ClpIrFileAppender";
@@ -147,9 +145,11 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
      * @throws IOException on I/O error
      */
     public synchronized void startNewFile(String path) throws IOException {
-        if (!activated) { throw new IllegalStateException("Appender not activated."); }
+        if (false == activated) { throw new IllegalStateException("Appender not activated."); }
 
-        if (!this.isStarted()) { throw new IllegalStateException("Appender already closed."); }
+        if (false == this.isStarted()) {
+            throw new IllegalStateException("Appender already closed.");
+        }
 
         Objects.requireNonNull(clpIrOutputStream).close();
         uncompressedSizeInBytes = 0;
@@ -170,7 +170,7 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
         // we are appending and can be called by multiple threads
         synchronized (lock) {
             // No-OP if we do not need to do any work
-            if (!isStarted() || isStopping() || isStopped()) { return; }
+            if (false == isStarted() || isStopping() || isStopped()) { return; }
 
             event.getLevel();
 
@@ -210,7 +210,7 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
     @Override
     public synchronized boolean stop(long timeout, final TimeUnit timeUnit) {
         synchronized (lock) {
-            if (isStopped() || isStopping() || !isStarted()) { return true; }
+            if (isStopped() || isStopping() || false == isStarted()) { return true; }
 
             setStopping();
         }
@@ -303,7 +303,6 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
     }
 
     protected static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
-
         @PluginBuilderAttribute("CloseFrameOnFlush")
         private boolean closeFrameOnFlush = true;
 

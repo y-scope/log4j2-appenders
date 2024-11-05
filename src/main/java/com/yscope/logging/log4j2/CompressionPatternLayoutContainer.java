@@ -58,7 +58,7 @@ public class CompressionPatternLayoutContainer {
         String timestampPatternRegex = "%d\\{(?<timestampPattern>[^}]*)}(?<suffix>.*)";
         Pattern pattern = Pattern.compile(timestampPatternRegex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(patternLayout.getConversionPattern());
-        if (!matcher.find()) {
+        if (false == matcher.find()) {
             throw new UnsupportedOperationException(
                     "Pattern layout must contain timestamp converter. Provided pattern: "
                             + patternLayout.getConversionPattern()
