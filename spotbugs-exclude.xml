@@ -46,4 +46,10 @@
     <Class name="com.yscope.logging.log4j2.AbstractBufferedRollingFileAppender" />
     <Justification>Custom synchronization is for shutdown after all user threads.</Justification>
   </Match>
+
+  <Match>
+    <Bug category="STYLE" code="DLS" value="DLS_DEAD_LOCAL_STORE" />
+    <Class name="com.yscope.logging.log4j2.TestFileAppender" />
+    <Justification>ignoreExceptions is used by internal log4j2 library. False Positive.</Justification>
+  </Match>
 </FindBugsFilter>

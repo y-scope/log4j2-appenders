@@ -119,29 +119,32 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     /**
      * Default constructor
      */
-    public AbstractBufferedRollingFileAppender (
-        final String name,
-        final Filter filter,
-        final Layout<? extends Serializable> layout,
-        final boolean ignoreExceptions,
-        final Property[] properties) {
+    public AbstractBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties
+    ) {
         this(name, filter, layout, ignoreExceptions, properties, new SystemTimeSource());
     }
 
     /**
      * Constructor to enable the ability to specify a TimeSource, such as those
      * that can be controlled manually to facilitate unit testing
+     * 
      * @param timeSource The time source that the appender should use
      */
-    public AbstractBufferedRollingFileAppender (
-        final String name,
-        final Filter filter,
-        final Layout<? extends Serializable> layout,
-        final boolean ignoreExceptions,
-        final Property[] properties,
-        TimeSource timeSource) {
+    public AbstractBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            TimeSource timeSource
+    ) {
         super(name, filter, layout, ignoreExceptions, properties);
-        this.timeSource = timeSource;
+        this.timeSource = new ManualTimeSource(timeSource);
 
         // The default flush timeout values below are optimized for high latency
         // remote persistent storage such as object stores or HDFS

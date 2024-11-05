@@ -21,7 +21,6 @@
 package com.yscope.logging.log4j2;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

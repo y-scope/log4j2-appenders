@@ -8,12 +8,18 @@ public class ManualTimeSource implements TimeSource {
     private long currentTimeInMilliseconds = 0;
 
     @Override
-    public synchronized void setCurrentTimeInMilliseconds (long currentTimeInMilliseconds) {
+    public synchronized void setCurrentTimeInMilliseconds(long currentTimeInMilliseconds) {
         this.currentTimeInMilliseconds = currentTimeInMilliseconds;
     }
 
     @Override
-    public synchronized long getCurrentTimeInMilliseconds () {
-        return currentTimeInMilliseconds;
+    public synchronized long getCurrentTimeInMilliseconds() { return currentTimeInMilliseconds; }
+
+    public ManualTimeSource(TimeSource timeSource) {
+        this.currentTimeInMilliseconds = timeSource.getCurrentTimeInMilliseconds();
+    }
+
+    public ManualTimeSource() {
+        this.currentTimeInMilliseconds = 0;
     }
 }

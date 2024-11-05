@@ -49,26 +49,29 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
     // This instance variable should be up-to-date at all times
     private ClpIrFileAppender clpIrFileAppender = null;
 
-    public AbstractClpIrBufferedRollingFileAppender (
-        final String name,
-        final Filter filter,
-        final Layout<? extends Serializable> layout,
-        final boolean ignoreExceptions,
-        final Property[] properties) {
+    public AbstractClpIrBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties
+    ) {
         super(name, filter, layout, ignoreExceptions, properties);
     }
 
     /**
      * Constructor
+     * 
      * @param timeSource The time source that the appender should use
      */
-    public AbstractClpIrBufferedRollingFileAppender (
-        final String name,
-        final Filter filter,
-        final Layout<? extends Serializable> layout,
-        final boolean ignoreExceptions,
-        final Property[] properties,
-        TimeSource timeSource) {
+    public AbstractClpIrBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            TimeSource timeSource
+    ) {
         super(name, filter, layout, ignoreExceptions, properties, timeSource);
     }
 
