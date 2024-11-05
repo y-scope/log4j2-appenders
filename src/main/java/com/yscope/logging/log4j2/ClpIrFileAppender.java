@@ -166,8 +166,8 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
 
     @Override
     public void append(final LogEvent event) {
-        // We synchronize on the lock to ensure that the appender is not stopped while
-        // we are appending and can be called by multiple threads
+        // We synchronize on the lock to ensure that the appender is not stopped while we are
+        // appending and can be called by multiple threads
         synchronized (lock) {
             // No-OP if we do not need to do any work
             if (false == isStarted() || isStopping() || isStopped()) { return; }
