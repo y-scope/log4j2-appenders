@@ -16,7 +16,7 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
 # Usage
 
 ## `ClpIrFileAppender`
-1. Add the package and its dependencies to the `dependencies` section of your your `pom.xml`:
+1. Add the package and its dependencies to the `dependencies` section of your `pom.xml`:
 
    ```xml
    <dependencies>
