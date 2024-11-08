@@ -24,19 +24,24 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
      <dependency>
        <groupId>com.yscope.logging</groupId>
        <artifactId>log4j2-appenders</artifactId>
-       <version>0.0.0</version>
+       <version>0.1.0</version>
      </dependency>
-     <!-- Packages that log4j1-appenders depends on -->
+
+     <!-- Packages that log4j2-appenders depends on -->
      <dependency>
        <groupId>com.github.luben</groupId>
        <artifactId>zstd-jni</artifactId>
-       <version>1.5.2-2</version>
+       <version>1.5.6-7</version>
      </dependency>
      <dependency>
-       <groupId>log4j</groupId>
-       <artifactId>log4j</artifactId>
-       <version>2.19.0</version>
-       <scope>provided</scope>
+       <groupId>org.apache.logging.log4j</groupId>
+       <artifactId>log4j-api</artifactId>
+       <version>2.24.1</version>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.logging.log4j</groupId>
+       <artifactId>log4j-core</artifactId>
+       <version>2.24.1</version>
      </dependency>
    </dependencies>
    ```
