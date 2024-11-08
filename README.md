@@ -54,6 +54,7 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
 
     appender.clpir.type = com.yscope.logging.log4j2.ClpIrFileAppender
     appender.clpir.layout.type = PatternLayout
+
     # NOTE:
     # 1. This appender doesn't require a date conversion pattern in the conversion pattern. This is
     #    because the CLP appender stores the timestamp separately from the message. CLP's IR
@@ -63,13 +64,16 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
     #    removed.
     appender.clpir.layout.pattern = %d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
     appender.clpir.file=logs.clp.zst
+
     # Use CLP's four-byte encoding for lower memory usage at the cost of some compression ratio
     appender.clpir.UseFourByteEncoding = true
+
     # closeFrameOnFlush:
     # - true: any data buffered by the compressor is immediately flushed to disk; frequent flushes
     #   may lower compression ratio significantly
     # - false: any compressed data that is ready for writing will be flushed to disk
     appender.clpir.CloseFrameOnFlush=false
+
     # compressionLevel: Higher compression levels may increase compression ratio but will slow down
     # compression. Valid compression levels are 1-19.
     appender.clpir.CompressionLevel = 3
