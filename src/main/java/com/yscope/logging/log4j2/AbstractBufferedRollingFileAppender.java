@@ -130,8 +130,8 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
     }
 
     /**
-     * Constructor to enable the ability to specify a TimeSource, such as those
-     * that can be controlled manually to facilitate unit testing
+     * Constructor to enable the ability to specify a {@link TimeSource}, such as those that can be
+     * controlled manually to facilitate unit testing.
      * 
      * @param timeSource The time source that the appender should use
      */
@@ -146,8 +146,8 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
         super(name, filter, layout, ignoreExceptions, properties);
         this.timeSource = new ManualTimeSource(timeSource);
 
-        // The default flush timeout values below are optimized for high latency
-        // remote persistent storage such as object stores or HDFS
+        // The default flush timeout values below are optimized for high-latency remote persistent
+        // storage such as object stores or HDFS
         flushHardTimeoutPerLevel.put(Level.FATAL, 5L * 60 * 1000 /* 5 min */);
         flushHardTimeoutPerLevel.put(Level.ERROR, 5L * 60 * 1000 /* 5 min */);
         flushHardTimeoutPerLevel.put(Level.WARN, 10L * 60 * 1000 /* 10 min */);

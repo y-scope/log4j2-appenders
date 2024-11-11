@@ -10,9 +10,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * A rolling file appender used for testing
- * {@link AbstractClpIrBufferedRollingFileAppender}. It specifically allows us
- * to control the time visible to the appender and tracks the number of syncs
- * and rollover events.
+ * {@link AbstractClpIrBufferedRollingFileAppender}. It specifically allows us to control the time
+ * visible to the appender and tracks the number of syncs and rollover events.
  */
 public class RollingFileTestAppender extends AbstractClpIrBufferedRollingFileAppender {
     private int numSyncs = 0;

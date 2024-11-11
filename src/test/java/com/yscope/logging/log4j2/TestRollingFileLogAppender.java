@@ -36,10 +36,9 @@ public class TestRollingFileLogAppender {
      * Tests rollover based on the uncompressed size of the file.
      */
     @Test
-    public void testRollingBasedOnUncompressedSize() throws IOException {
+    public void testRollingBasedOnUncompressedSize() {
         RollingFileTestAppender appender = createTestAppender(true, true);
-        // Set the uncompressed rollover size to 1 so that every append triggers a
-        // rollover
+        // Set the uncompressed rollover size to 1 so that every append triggers a rollover
         appender._setRolloverUncompressedSizeThreshold(1);
         appender.start();
 
@@ -62,17 +61,17 @@ public class TestRollingFileLogAppender {
      * Tests rollover based on the compressed size of the file.
      */
     @Test
-    public void testRollingBasedOnCompressedSize() throws IOException {
+    public void testRollingBasedOnCompressedSize() {
         RollingFileTestAppender appender = createTestAppender(true, true);
-        // Set the compressed rollover size to 1 so that a rollover is triggered
-        // once data is output to the file
+
+        // Set the compressed rollover size to 1 so that a rollover is triggered once data is output
+        // to the file
         appender._setRolloverCompressedSizeThreshold(1);
         appender.start();
 
-        // Verify that an append-flush-append sequence triggers a rollover. We need
-        // the first append and flush to force the compressor to flush the buffered
-        // log event to the output file. The final append is to trigger the
-        // rollover.
+        // Verify that an append-flush-append sequence triggers a rollover. We need the first append
+        // and flush to force the compressor to flush the buffered log event to the output file. The
+        // final append is to trigger the rollover.
         int expectedNumRollovers = 0;
         appendLogEvent(0, Level.INFO, appender);
         assertDoesNotThrow(appender::flush);
@@ -91,7 +90,7 @@ public class TestRollingFileLogAppender {
      * Tests the hard timeout
      */
     @Test
-    public void testHardTimeout() throws IOException {
+    public void testHardTimeout() {
         validateBasicFlushTimeoutSupport(false);
 
         RollingFileTestAppender appender = createTestAppender(true, false);
@@ -100,18 +99,19 @@ public class TestRollingFileLogAppender {
         int expectedNumRollovers = 0;
         int currentTimestamp = 1;
 
-        // Verify a sequence of two ERROR events triggers a sync due to the hard
-        // timeout of the first ERROR event
+        // Verify a sequence of two ERROR events triggers a sync due to the hard timeout of the
+        // first ERROR event
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
+
         // Move time forward to just before the timeout
-        // NOTE: We use "- 2" here (instead of "- 1") so that in the next validation
-        // step, validateSyncAfterTimeout still has room to move time forward before
-        // triggering the timeout
+        // NOTE: We use "- 2" here (instead of "- 1") so that in the next validation step,
+        // validateSyncAfterTimeout still has room to move time forward before triggering the
+        // timeout
         currentTimestamp += flushErrorLevelTimeout * flushHardTimeoutUnitInMilliseconds - 2;
         appender.setTime(currentTimestamp);
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
-        // Append the second ERROR event and validate a sync happens due to the
-        // first
+
+        // Append the second ERROR event and validate a sync happens due to the first
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
         currentTimestamp += 2;
         ++expectedNumSyncs;
@@ -121,6 +121,7 @@ public class TestRollingFileLogAppender {
                 expectedNumRollovers,
                 appender
         );
+
         // Validate no sync happens because of the second ERROR event
         currentTimestamp += flushErrorLevelTimeout * flushHardTimeoutUnitInMilliseconds;
         appender.setTime(currentTimestamp);
@@ -136,25 +137,22 @@ public class TestRollingFileLogAppender {
      * Tests the soft timeout
      */
     @Test
-    public void testSoftTimeout() throws IOException {
-        // validateBasicFlushTimeoutSupport(true);
-
+    public void testSoftTimeout() {
         RollingFileTestAppender appender = createTestAppender(false, true);
         appender.start();
         int expectedNumSyncs = 0;
         int expectedNumRollovers = 0;
         int currentTimestamp = 1;
 
-        // Append three events over some time period and verify a sync only happens
-        // after the timeout triggered by the last event
+        // Append three events over some time period and verify a sync only happens after the
+        // timeout triggered by the last event
         int iterations = 3;
         for (int i = 0; i < iterations; i++) {
             appendLogEvent(currentTimestamp, Level.INFO, appender);
             currentTimestamp += 1;
             appender.setTime(currentTimestamp);
         }
-        // NOTE: The -1 is to account for the extra time unit we added after the
-        // last log event
+        // NOTE: The -1 is to account for the extra time unit we added after the last log event
         currentTimestamp += flushInfoLevelTimeout * flushSoftTimeoutUnitInMilliseconds - 1;
         ++expectedNumSyncs;
         validateSyncAfterTimeout(
@@ -164,15 +162,16 @@ public class TestRollingFileLogAppender {
                 appender
         );
 
-        // Verify a sequence of two ERROR events triggers a sync due to the soft
-        // timeout of the second ERROR event
+        // Verify a sequence of two ERROR events triggers a sync due to the soft timeout of the
+        // second ERROR event
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
+
         // Move time forward to just before the timeout
         currentTimestamp += flushErrorLevelTimeout * flushSoftTimeoutUnitInMilliseconds - 1;
         appender.setTime(currentTimestamp);
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
-        // Append the second ERROR event and validate a sync happens only due to the
-        // second
+
+        // Append the second ERROR event and validate a sync happens only due to the second
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
         currentTimestamp += 1;
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
@@ -185,16 +184,17 @@ public class TestRollingFileLogAppender {
                 appender
         );
 
-        // Verify a sequence of ERROR-INFO events triggers a sync due to the soft
-        // timeout of the second log event as if it was an ERROR event rather than
-        // an INFO event
+        // Verify a sequence of ERROR-INFO events triggers a sync due to the soft timeout of the
+        // second log event as if it was an ERROR event rather than an INFO event
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
+
         // Move time forward to just before the timeout
         currentTimestamp += flushErrorLevelTimeout * flushSoftTimeoutUnitInMilliseconds - 1;
         appender.setTime(currentTimestamp);
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
-        // Append the INFO event and validate the timeout logic treats it as if it
-        // was a second ERROR event
+
+        // Append the INFO event and validate the timeout logic treats it as if it was a second
+        // ERROR event
         appendLogEvent(currentTimestamp, Level.INFO, appender);
         currentTimestamp += 1;
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
@@ -217,7 +217,7 @@ public class TestRollingFileLogAppender {
      * Tests custom log levels with the hard timeouts
      */
     @Test
-    public void testCustomLogLevelsWithHardTimeout() throws IOException {
+    public void testCustomLogLevelsWithHardTimeout() {
         validateFlushTimeoutSupportForCustomLogLevels(false);
     }
 
@@ -225,7 +225,7 @@ public class TestRollingFileLogAppender {
      * Tests custom log levels with the soft timeouts
      */
     @Test
-    public void testCustomLogLevelWithSoftTimeout() throws IOException {
+    public void testCustomLogLevelWithSoftTimeout() {
         validateFlushTimeoutSupportForCustomLogLevels(true);
     }
 
@@ -233,7 +233,7 @@ public class TestRollingFileLogAppender {
      * Tests closing the appender with different closeOnShutdown settings
      */
     @Test
-    public void testClose() throws IOException {
+    public void testClose() {
         validateAppenderClose(true);
         validateAppenderClose(false);
     }
@@ -242,7 +242,7 @@ public class TestRollingFileLogAppender {
      * Tests the appender's shutdown handling when it's open/closed
      */
     @Test
-    public void testShutdownLogic() throws IOException {
+    public void testShutdownLogic() {
         validateCloseBeforeShutdown(true);
         validateCloseBeforeShutdown(false);
         validateShutdownWithoutClose(0);
@@ -261,13 +261,12 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Performs basic validation of flush timeout support (not specific to either
-     * soft/hard) for the appender
+     * Performs basic validation of flush timeout support (not specific to either soft/hard) for the
+     * appender
      * 
-     * @param testSoftTimeout Whether to test soft (true) or hard (false) timeout
-     * support
+     * @param testSoftTimeout Whether to test soft (true) or hard (false) timeout support
      */
-    private void validateBasicFlushTimeoutSupport(boolean testSoftTimeout) throws IOException {
+    private void validateBasicFlushTimeoutSupport(boolean testSoftTimeout) {
         int timeoutUnitInMilliseconds = testSoftTimeout ? flushSoftTimeoutUnitInMilliseconds
                 : flushHardTimeoutUnitInMilliseconds;
         RollingFileTestAppender appender = createTestAppender(
@@ -290,8 +289,8 @@ public class TestRollingFileLogAppender {
                 appender
         );
 
-        // Verify a sequence of INFO-ERROR events triggers a sync due to the ERROR
-        // event sooner than the timeout for the INFO event
+        // Verify a sequence of INFO-ERROR events triggers a sync due to the ERROR event sooner than
+        // the timeout for the INFO event
         appendLogEvent(currentTimestamp, Level.INFO, appender);
         appendLogEvent(currentTimestamp, Level.ERROR, appender);
         validateNumSyncAndCloseEvents(appender, expectedNumSyncs, expectedNumRollovers);
@@ -303,6 +302,7 @@ public class TestRollingFileLogAppender {
                 expectedNumRollovers,
                 appender
         );
+
         // Validate no sync happens because of the INFO event
         currentTimestamp += flushInfoLevelTimeout * timeoutUnitInMilliseconds;
         appender.setTime(currentTimestamp);
@@ -315,14 +315,12 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Performs basic validation of flush timeout support for custom log levels
-     * (not specific to either soft/hard timeouts)
+     * Performs basic validation of flush timeout support for custom log levels (not specific to
+     * either soft/hard timeouts)
      * 
-     * @param testSoftTimeout Whether to test soft (true) or hard (false) timeout
-     * support
+     * @param testSoftTimeout Whether to test soft (true) or hard (false) timeout support
      */
-    private void validateFlushTimeoutSupportForCustomLogLevels(boolean testSoftTimeout)
-            throws IOException {
+    private void validateFlushTimeoutSupportForCustomLogLevels(boolean testSoftTimeout) {
         int timeoutUnitInMilliseconds = testSoftTimeout ? flushSoftTimeoutUnitInMilliseconds
                 : flushHardTimeoutUnitInMilliseconds;
         RollingFileTestAppender appender = createTestAppender(
@@ -334,8 +332,8 @@ public class TestRollingFileLogAppender {
         int expectedNumRollovers = 0;
         int currentTimestamp = 1;
 
-        // Verify an event with a custom log level can be handled and is assigned
-        // the INFO level timeout
+        // Verify an event with a custom log level can be handled and is assigned the INFO level
+        // timeout
         appendLogEvent(
                 currentTimestamp,
                 Level.forName("DEBUG1", Level.DEBUG.intLevel() + 1),
@@ -361,7 +359,7 @@ public class TestRollingFileLogAppender {
      * 
      * @param closeOnShutdown The value of closeOnShutdown to use when validating
      */
-    private void validateAppenderClose(boolean closeOnShutdown) throws IOException {
+    private void validateAppenderClose(boolean closeOnShutdown) {
         RollingFileTestAppender appender = createTestAppender(false, false);
         appender._setCloseOnShutdown(closeOnShutdown);
         appender.start();
@@ -384,7 +382,7 @@ public class TestRollingFileLogAppender {
      * 
      * @param closeOnShutdown The value of closeOnShutdown to use when validating
      */
-    private void validateCloseBeforeShutdown(boolean closeOnShutdown) throws IOException {
+    private void validateCloseBeforeShutdown(boolean closeOnShutdown) {
         RollingFileTestAppender appender = createTestAppender(false, false);
         appender._setCloseOnShutdown(closeOnShutdown);
         appender.start();
@@ -402,10 +400,10 @@ public class TestRollingFileLogAppender {
     /**
      * Validates shutting down the appender without calling {@code close} first
      * 
-     * @param numTimeoutSettingsToTest 0 - no timeouts, 1 - soft timeout only,
-     * 2 - both soft and hard timeouts
+     * @param numTimeoutSettingsToTest 0 - no timeouts, 1 - soft timeout only, 2 - both soft and
+     * hard timeouts
      */
-    private void validateShutdownWithoutClose(int numTimeoutSettingsToTest) throws IOException {
+    private void validateShutdownWithoutClose(int numTimeoutSettingsToTest) {
         RollingFileTestAppender appender = createTestAppender(true, true);
         appender._setCloseOnShutdown(false);
         final int shutdownSoftTimeoutInMillis = 200;
@@ -431,8 +429,8 @@ public class TestRollingFileLogAppender {
             // Don't log anything
             currentTimestamp = shutdownSoftTimeoutInMillis - 1;
         } else if (1 == numTimeoutSettingsToTest) {
-            // Log two events to advance the soft shutdown timeout once before it
-            // expires. In each case, ensure the background threads continue to run.
+            // Log two events to advance the soft shutdown timeout once before it expires. In each
+            // case, ensure the background threads continue to run.
             for (int i = 0; i < 2; ++i) {
                 appendLogEvent(currentTimestamp, Level.INFO, appender);
                 waitForBackgroundFlushThread();
@@ -441,9 +439,9 @@ public class TestRollingFileLogAppender {
                 setTimestampAndValidateThreadsState(currentTimestamp, true, appender);
             }
         } else {
-            // Log enough events so we get close to the hard shutdown timeout without
-            // exceeding it, all while the soft shutdown timeout is kept alive.
-            // Throughout, ensure the background threads continue to run.
+            // Log enough events so that we get close to the hard shutdown timeout without exceeding
+            // it, all while the soft shutdown timeout is kept alive. Throughout, ensure the
+            // background threads continue to run.
             for (int i = 0; i < numShutdownSoftTimeoutsInHardTimeout; ++i) {
                 appendLogEvent(currentTimestamp, Level.INFO, appender);
                 waitForBackgroundFlushThread();
@@ -451,8 +449,8 @@ public class TestRollingFileLogAppender {
                 currentTimestamp += shutdownSoftTimeoutInMillis - 1;
                 setTimestampAndValidateThreadsState(currentTimestamp, true, appender);
             }
-            // Log one more event so we exceed the hard shutdown timeout and advance
-            // the timestamp to just before the hard timeout
+            // Log one more event so that we exceed the hard shutdown timeout and advance the
+            // timestamp to just before the hard timeout
             appendLogEvent(currentTimestamp, Level.INFO, appender);
             waitForBackgroundFlushThread();
             currentTimestamp = shutdownSoftTimeoutInMillis * numShutdownSoftTimeoutsInHardTimeout
@@ -480,8 +478,7 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Validates that a sync only occurs after the specified timestamp and not a
-     * time unit before
+     * Validates that a sync only occurs after the specified timestamp and not a time unit before
      * 
      * @param syncTimestamp Time when the sync should occur
      * @param expectedNumSyncs
@@ -501,8 +498,7 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Sets the appender's time to the given timestamp and validates that the
-     * threads are in the
+     * Sets the appender's time to the given timestamp and validates that the threads are in the
      * given state
      * 
      * @param timestamp
@@ -522,8 +518,8 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Imperfectly waits for the appender's background flush thread to make
-     * progress by simply sleeping for some amount of time
+     * Imperfectly waits for the appender's background flush thread to make progress by simply
+     * sleeping for some amount of time
      */
     private void waitForBackgroundFlushThread() {
         final long durationNecessaryForBackgroundFlushThreadProgress = 200; // milliseconds
@@ -531,8 +527,7 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Validates that the appender has triggered the given number of sync and
-     * sync-and-close events
+     * Validates that the appender has triggered the given number of sync and sync-and-close events
      * 
      * @param appender
      * @param numSyncs
@@ -544,8 +539,7 @@ public class TestRollingFileLogAppender {
             int numRollovers
     ) {
         long sleepTime = timeoutCheckPeriod * 2;
-        // Sleep so the background threads have a chance to process any syncs and
-        // rollovers
+        // Sleep so the background threads have a chance to process any syncs and rollovers
         assertDoesNotThrow(() -> sleep(sleepTime));
 
         // Verify the expected num of syncs and rollovers
@@ -563,8 +557,8 @@ public class TestRollingFileLogAppender {
     }
 
     /**
-     * Creates and initializes a RollingFileTestAppender for the tests. Note that
-     * this method doesn't call {@code activateOptions} on the appender.
+     * Creates and initializes a RollingFileTestAppender for the tests. Note that this method
+     * doesn't call {@code activateOptions} on the appender.
      * 
      * @param disableSoftTimeout
      * @param disableHardTimeout

@@ -144,8 +144,8 @@ public class TestFileAppender {
     /**
      * Tests creating an empty CLP IR stream log with the given path.
      * 
-     * @param filePath Path to create. Note that after the test, the entire
-     * directory tree specified by the path will be deleted.
+     * @param filePath Path to create. Note that after the test, the entire directory tree specified
+     * by the path will be deleted.
      * @param useFourByteEncoding
      * @throws IOException on I/O error
      */
@@ -215,9 +215,9 @@ public class TestFileAppender {
             int compressionLevel
     )
             throws IOException {
-        // TODO Once decoding support has been added to clp-ffi-java, these tests
-        // should all be verified by a decoding the stream and comparing it with
-        // the output of an uncompressed file appender.
+        // TODO Once decoding support has been added to clp-ffi-java, these tests should all be
+        // verified by a decoding the stream and comparing it with the output of an uncompressed
+        // file appender.
 
         Logger logger = LogManager.getLogger(TestFileAppender.class);
         String message = "Static text, dictVar1, 123, 456.7, dictVar2, 987, 654.3";

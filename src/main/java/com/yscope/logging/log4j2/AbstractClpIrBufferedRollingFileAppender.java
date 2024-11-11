@@ -60,8 +60,6 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
     }
 
     /**
-     * Constructor
-     * 
      * @param timeSource The time source that the appender should use
      */
     public AbstractClpIrBufferedRollingFileAppender(
