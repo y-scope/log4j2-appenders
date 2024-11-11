@@ -820,25 +820,25 @@ public abstract class AbstractBufferedRollingFileAppender extends AbstractAppend
 
     protected static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
         @PluginBuilderAttribute("baseName")
-        private String baseName = null;
+        protected String baseName = null;
 
         @PluginBuilderAttribute("CloseOnShutdown")
-        private boolean closeOnShutdown = true;
+        protected boolean closeOnShutdown = true;
 
         @PluginBuilderAttribute("FlushHardTimeoutsInMinutes")
-        private String flushHardTimeoutsInMinutes = null;
+        protected String flushHardTimeoutsInMinutes = null;
 
         @PluginBuilderAttribute("FlushSoftTimeoutsInSeconds")
-        private String flushSoftTimeoutsInSeconds = null;
+        protected String flushSoftTimeoutsInSeconds = null;
 
         @PluginBuilderAttribute("ShutdownSoftTimeoutInMilliseconds")
-        private long shutdownSoftTimeout = 5000;
+        protected long shutdownSoftTimeout = 5000;
 
         @PluginBuilderAttribute("ShutdownHardTimeoutInSeconds")
-        private long shutdownHardTimeout = 30;
+        protected long shutdownHardTimeout = 30;
 
         @PluginBuilderAttribute("TimeoutCheckPeriod")
-        private int timeoutCheckPeriod = 1000;
+        protected int timeoutCheckPeriod = 1000;
 
         /** @param baseName The base filename for log files */
         public B setBaseName(String baseName) {
