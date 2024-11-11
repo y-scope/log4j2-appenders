@@ -6,15 +6,14 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
   the logs are being generated.
 
 * `AbstractBufferedRollingFileAppender` - An abstract class which enforces an opinionated workflow,
-  skeleton interfaces and hooks optimized towards buffered rolling file appender implementations
-  with remote persistent storage. In addition, the abstract class implements verbosity-aware
-  hard+soft timeout based log freshness policy.
+  skeleton interfaces, and hooks optimized towards buffered rolling file appender implementations
+  with remote persistent storage. In addition, the abstract class implements a log-level-aware
+  hard + soft timeout-based log-freshness policy.
 
 * `AbstractClpirBufferedRollingFileAppender` - Provides size-based file rollover, log freshness
-  guarantee and streaming compression offered in `ClpIrFileAppender`.
+  guarantee, and streaming compression offered by `ClpIrFileAppender`.
 
 # Usage
-
 ## `ClpIrFileAppender`
 1. Add the package and its dependencies to the `dependencies` section of your `pom.xml`:
 
@@ -46,7 +45,7 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
    </dependencies>
    ```
 
-2. Add the appender to your log4j configuration file. Here is a sample log4j.properties file:
+2. Add the appender to your Log4j2 configuration file. Here is a sample `log4j2.properties` file:
 
    ```properties
     rootLogger.level = INFO
@@ -69,9 +68,9 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
     appender.clpir.UseFourByteEncoding = true
 
     # closeFrameOnFlush:
-    # - true: any data buffered by the compressor is immediately flushed to disk; frequent flushes
+    # - true: Any data buffered by the compressor is immediately flushed to disk; frequent flushes
     #   may lower compression ratio significantly
-    # - false: any compressed data that is ready for writing will be flushed to disk
+    # - false: Any compressed data that is ready for writing will be flushed to disk
     appender.clpir.CloseFrameOnFlush=false
 
     # compressionLevel: Higher compression levels may increase compression ratio but will slow down
@@ -80,11 +79,10 @@ This is a repository for a set of useful [Log4j 2][log4j2] appenders. Currently,
    ```
 
 ## `AbstractClpIrBufferedRollingFileAppender`
-To use class, we expect user to implement at minimum the `sync()` method to perform file upload to
-remote persistent store.
+To use this appender, at minimum, we expect the user to implement the `sync()` method to perform
+file upload to remote persistent storage.
 
 # Providing Feedback
-
 You can use GitHub issues to [report a bug][report-bug] or [request a feature][feature-req].
 
 # Contributing
