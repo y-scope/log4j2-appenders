@@ -304,14 +304,14 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
 
     protected static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
         @PluginBuilderAttribute("CloseFrameOnFlush")
-        protected boolean closeFrameOnFlush = true;
+        private boolean closeFrameOnFlush = true;
 
         @PluginBuilderAttribute("UseFourByteEncoding")
-        protected boolean useFourByteEncoding = true;
+        private boolean useFourByteEncoding = true;
 
         @PluginBuilderAttribute("fileName")
         @SuppressWarnings("NullAway")
-        protected String fileName;
+        private String fileName;
 
         public B setFileName(String fileName) {
             this.fileName = fileName;

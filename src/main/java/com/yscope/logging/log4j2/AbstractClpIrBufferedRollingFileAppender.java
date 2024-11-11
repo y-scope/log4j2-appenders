@@ -248,22 +248,22 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
             extends
             AbstractBufferedRollingFileAppender.Builder<B> {
         @PluginBuilderAttribute("CompressionLevel")
-        protected int compressionLevel = 3;
+        private int compressionLevel = 3;
 
         @PluginBuilderAttribute("RolloverCompressedSizeThreshold")
-        protected long rolloverCompressedSizeThreshold = 16 * 1024 * 1024; // Bytes;
+        private long rolloverCompressedSizeThreshold = 16 * 1024 * 1024; // Bytes;
 
         @PluginBuilderAttribute("RolloverUncompressedSizeThreshold")
-        protected long rolloverUncompressedSizeThreshold = 1024L * 1024 * 1024; // Bytes;
+        private long rolloverUncompressedSizeThreshold = 1024L * 1024 * 1024; // Bytes;
 
         @PluginBuilderAttribute("UseFourByteEncoding")
-        protected boolean useFourByteEncoding = false;
+        private boolean useFourByteEncoding = false;
 
         @PluginBuilderAttribute("outputDir")
-        protected String outputDir = null;
+        private String outputDir = null;
 
         @PluginBuilderAttribute("closeFrameOnFlush")
-        protected boolean closeFrameOnFlush = true;
+        private boolean closeFrameOnFlush = true;
 
         /**
          * Sets the compression level for the appender's streaming compressor
