@@ -1,13 +1,16 @@
 package com.yscope.logging.log4j2;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.luben.zstd.Zstd;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
@@ -45,6 +48,30 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
 
     // This instance variable should be up-to-date at all times
     private ClpIrFileAppender clpIrFileAppender = null;
+
+    public AbstractClpIrBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties
+    ) {
+        super(name, filter, layout, ignoreExceptions, properties);
+    }
+
+    /**
+     * @param timeSource The time source that the appender should use
+     */
+    public AbstractClpIrBufferedRollingFileAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            TimeSource timeSource
+    ) {
+        super(name, filter, layout, ignoreExceptions, properties, timeSource);
+    }
 
     public AbstractClpIrBufferedRollingFileAppender(
             final String name,
@@ -86,7 +113,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
         _setOutputDir(outputDir);
     }
 
-    private void _setCloseFrameOnFlush(boolean closeFrameOnFlush) {
+    protected void _setCloseFrameOnFlush(boolean closeFrameOnFlush) {
         this.closeFrameOnFlush = closeFrameOnFlush;
     }
 
@@ -95,7 +122,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
      *
      * @param compressionLevel The compression level between 1 and 22
      */
-    private void _setCompressionLevel(int compressionLevel) {
+    protected void _setCompressionLevel(int compressionLevel) {
         this.compressionLevel = compressionLevel;
     }
 
@@ -104,7 +131,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
      *
      * @param rolloverCompressedSizeThreshold The threshold size in bytes
      */
-    private void _setRolloverCompressedSizeThreshold(long rolloverCompressedSizeThreshold) {
+    protected void _setRolloverCompressedSizeThreshold(long rolloverCompressedSizeThreshold) {
         this.rolloverCompressedSizeThreshold = rolloverCompressedSizeThreshold;
     }
 
@@ -113,7 +140,7 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
      *
      * @param rolloverUncompressedSizeThreshold The threshold size in bytes
      */
-    private void _setRolloverUncompressedSizeThreshold(long rolloverUncompressedSizeThreshold) {
+    protected void _setRolloverUncompressedSizeThreshold(long rolloverUncompressedSizeThreshold) {
         this.rolloverUncompressedSizeThreshold = rolloverUncompressedSizeThreshold;
     }
 
@@ -121,12 +148,12 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
      * @param useFourByteEncoding Whether to use CLP's four-byte encoding instead of the default
      * eight-byte encoding
      */
-    private void _setUseFourByteEncoding(boolean useFourByteEncoding) {
+    protected void _setUseFourByteEncoding(boolean useFourByteEncoding) {
         this.useFourByteEncoding = useFourByteEncoding;
     }
 
     /** @param outputDir The output directory path for log files */
-    private void _setOutputDir(String outputDir) {
+    protected void _setOutputDir(String outputDir) {
         this.outputDir = outputDir;
     }
 
@@ -219,22 +246,22 @@ public abstract class AbstractClpIrBufferedRollingFileAppender
             extends
             AbstractBufferedRollingFileAppender.Builder<B> {
         @PluginBuilderAttribute("CompressionLevel")
-        private int compressionLevel = 3;
+        protected int compressionLevel = 3;
 
         @PluginBuilderAttribute("RolloverCompressedSizeThreshold")
-        private long rolloverCompressedSizeThreshold = 16 * 1024 * 1024; // Bytes;
+        protected long rolloverCompressedSizeThreshold = 16 * 1024 * 1024; // Bytes;
 
         @PluginBuilderAttribute("RolloverUncompressedSizeThreshold")
-        private long rolloverUncompressedSizeThreshold = 1024L * 1024 * 1024; // Bytes;
+        protected long rolloverUncompressedSizeThreshold = 1024L * 1024 * 1024; // Bytes;
 
         @PluginBuilderAttribute("UseFourByteEncoding")
-        private boolean useFourByteEncoding = false;
+        protected boolean useFourByteEncoding = false;
 
         @PluginBuilderAttribute("outputDir")
-        private String outputDir = null;
+        protected String outputDir = null;
 
         @PluginBuilderAttribute("closeFrameOnFlush")
-        private boolean closeFrameOnFlush = true;
+        protected boolean closeFrameOnFlush = true;
 
         /**
          * Sets the compression level for the appender's streaming compressor

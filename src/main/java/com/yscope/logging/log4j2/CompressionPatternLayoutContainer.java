@@ -21,7 +21,6 @@
 package com.yscope.logging.log4j2;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +47,9 @@ public class CompressionPatternLayoutContainer {
     private final PatternLayoutBufferDestination logMsgByteBufferDestination;
 
     public CompressionPatternLayoutContainer(final PatternLayout patternLayout) {
-        Objects.requireNonNull(patternLayout);
+        if (null == patternLayout) {
+            throw new IllegalArgumentException("patternLayout is required");
+        }
 
         // Parse the timestamp out into 2 parts
         // - tsPattern,
