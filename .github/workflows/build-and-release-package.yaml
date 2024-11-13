@@ -1,0 +1,77 @@
+name: "build-and-release-package"
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/build-and-release-package.yaml"
+      - ".gitmodules"
+      - "pom.xml"
+      - "src/**/*"
+  push:
+    paths:
+      - ".github/workflows/build-and-release-package.yaml"
+      - ".gitmodules"
+      - "pom.xml"
+      - "src/**/*"
+  workflow_dispatch:
+
+# Concurrency group to prevent multiple workflow instances from trying to publish releases
+concurrency: "${{github.workflow}}-${{github.ref}}"
+
+permissions: {}
+
+jobs:
+  build-and-release:
+    runs-on: "ubuntu-latest"
+    permissions:
+      # To publish to GitHub packages
+      packages: "write"
+    env:
+      JAVA_DIST: "temurin"
+      JAVA_VERSION: "11"
+    steps:
+      - uses: "actions/checkout@v4"
+        with:
+          submodules: "recursive"
+
+      - uses: "actions/setup-java@v4"
+        with:
+          java-version: "${{env.JAVA_VERSION}}"
+          distribution: "${{env.JAVA_DIST}}"
+          server-id: "github"
+
+      # This will override the setup-java step above
+      - if: "startsWith(github.ref, 'refs/heads/v') && github.event_name == 'workflow_dispatch'"
+        uses: "actions/setup-java@v4"
+        with:
+          java-version: "${{env.JAVA_VERSION}}"
+          distribution: "${{env.JAVA_DIST}}"
+          server-id: "ossrh"
+          server-username: "MAVEN_USERNAME"
+          server-password: "MAVEN_PASSWORD"
+          gpg-private-key: "${{secrets.GPG_PRIVATE_KEY}}"
+          gpg-passphrase: "MAVEN_GPG_PASSPHRASE"
+
+      - name: "Build package, and run tests"
+        run: "mvn --batch-mode package"
+
+      - if: "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'"
+        name: "Deploy to GitHub Packages"
+        run: "mvn --batch-mode deploy -DskipTests -Pgithub_release"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - if: "startsWith(github.ref, 'refs/heads/v') && github.event_name == 'workflow_dispatch'"
+        name: "Deploy to Maven Central"
+        run: "mvn --batch-mode deploy -DskipTests -Pmaven_release"
+        env:
+          MAVEN_USERNAME: "${{secrets.OSSRH_USERNAME}}"
+          MAVEN_PASSWORD: "${{secrets.OSSRH_TOKEN}}"
+          MAVEN_GPG_PASSPHRASE: "${{secrets.GPG_PASSPHRASE}}"
+
+      - uses: "actions/upload-artifact@v4"
+        with:
+          name: "log4j2-appenders"
+          path: "${{github.workspace}}/target/log4j2-appenders-*.jar"
+          if-no-files-found: "error"
+          retention-days: 1
