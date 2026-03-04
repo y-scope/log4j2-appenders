@@ -46,7 +46,7 @@ jobs:
         with:
           java-version: "${{env.JAVA_VERSION}}"
           distribution: "${{env.JAVA_DIST}}"
-          server-id: "ossrh"
+          server-id: "central"
           server-username: "MAVEN_USERNAME"
           server-password: "MAVEN_PASSWORD"
           gpg-private-key: "${{secrets.GPG_PRIVATE_KEY}}"
@@ -65,8 +65,8 @@ jobs:
         name: "Deploy to Maven Central"
         run: "mvn --batch-mode deploy -DskipTests -Pmaven_release"
         env:
-          MAVEN_USERNAME: "${{secrets.OSSRH_USERNAME}}"
-          MAVEN_PASSWORD: "${{secrets.OSSRH_TOKEN}}"
+          MAVEN_USERNAME: "${{secrets.SONATYPE_USERNAME}}"
+          MAVEN_PASSWORD: "${{secrets.SONATYPE_TOKEN}}"
           MAVEN_GPG_PASSPHRASE: "${{secrets.GPG_PASSPHRASE}}"
 
       - uses: "actions/upload-artifact@v4"
