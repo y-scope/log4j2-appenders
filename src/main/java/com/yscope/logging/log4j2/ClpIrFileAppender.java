@@ -41,7 +41,9 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
@@ -52,6 +54,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * compressed output may be truncated. When the * appender is used directly from Log4j, we install a
  * shutdown hook for this purpose.
  */
+@Plugin(name = ClpIrFileAppender.PLUGIN_NAME, category = "Core", elementType = "appender", printObject = true)
 public class ClpIrFileAppender extends AbstractAppender implements Flushable {
     public static final String PLUGIN_NAME = "ClpIrFileAppender";
 
@@ -302,30 +305,66 @@ public class ClpIrFileAppender extends AbstractAppender implements Flushable {
         uncompressedSizeInBytes += timeZoneId.length();
     }
 
-    protected static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder extends AbstractAppender.Builder<Builder>
+            implements org.apache.logging.log4j.core.util.Builder<ClpIrFileAppender> {
         @PluginBuilderAttribute("CloseFrameOnFlush")
         protected boolean closeFrameOnFlush = true;
 
         @PluginBuilderAttribute("UseFourByteEncoding")
         protected boolean useFourByteEncoding = true;
 
+        @PluginBuilderAttribute("CompressionLevel")
+        protected int compressionLevel = 3;
+
         @PluginBuilderAttribute("fileName")
         @SuppressWarnings("NullAway")
         protected String fileName;
 
-        public B setFileName(String fileName) {
+        public Builder setFileName(String fileName) {
             this.fileName = fileName;
-            return asBuilder();
+            return this;
         }
 
-        public B setCloseFrameOnFlush(boolean closeFrameOnFlush) {
+        public Builder setCloseFrameOnFlush(boolean closeFrameOnFlush) {
             this.closeFrameOnFlush = closeFrameOnFlush;
-            return asBuilder();
+            return this;
         }
 
-        public B setUseFourByteEncoding(boolean useFourByteEncoding) {
+        public Builder setUseFourByteEncoding(boolean useFourByteEncoding) {
             this.useFourByteEncoding = useFourByteEncoding;
-            return asBuilder();
+            return this;
+        }
+
+        public Builder setCompressionLevel(int compressionLevel) {
+            this.compressionLevel = compressionLevel;
+            return this;
+        }
+
+        public ClpIrFileAppender build() {
+            if (!validateParameters()) {
+                return null;
+            }
+            PatternLayout layout = (PatternLayout) getOrCreateLayout();
+            try {
+                return new ClpIrFileAppender(
+                        fileName,
+                        getName(),
+                        isIgnoreExceptions(),
+                        layout,
+                        getFilter(),
+                        compressionLevel,
+                        useFourByteEncoding,
+                        closeFrameOnFlush
+                );
+            } catch (IOException e) {
+                LOGGER.error("Failed to create ClpIrFileAppender", e);
+                return null;
+            }
         }
 
         protected boolean validateParameters() {
